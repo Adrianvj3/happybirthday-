@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños! 🎉</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins, Pacifico y Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        script: ['Pacifico', 'cursive'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            300: '#FDE047',
+                            400: '#FACC15',
+                            500: '#EAB308',
+                            600: '#CA8A04',
+                        },
+                        darkbg: '#09090b',
+                        cardbg: '#141419',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2.5s infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-18px) rotate(3deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 25px rgba(250, 204, 21, 0.35), 0 0 50px rgba(236, 72, 153, 0.2)' },
+                            '50%': { boxShadow: '0 0 40px rgba(250, 204, 21, 0.65), 0 0 80px rgba(236, 72, 153, 0.4)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos personalizados para 3D, animaciones de velas, humo y tarjetas flip */
+        body {
+            background-color: #09090b;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(250, 204, 21, 0.1) 0%, transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(139, 92, 246, 0.14) 0%, transparent 50%);
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Caja de regalo 3D interactiva */
+        .gift-scene {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .gift-box {
+            position: relative;
+            width: 180px;
+            height: 150px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .gift-scene:hover .gift-box {
+            transform: scale(1.07) rotateY(-8deg) rotateX(4deg);
+        }
+
+        .gift-body {
+            position: absolute;
+            bottom: 0;
+            width: 180px;
+            height: 120px;
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 -10px 20px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        /* Cinta vertical de la caja */
+        .gift-body::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 34px;
+            height: 100%;
+            background: linear-gradient(90deg, #eab308, #fef08a, #ca8a04);
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+        }
+
+        .gift-lid {
+            position: absolute;
+            top: 12px;
+            left: -10px;
+            width: 200px;
+            height: 36px;
+            background: linear-gradient(135deg, #f43f5e 0%, #db2777 100%);
+            border-radius: 10px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+            z-index: 10;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+        }
+
+        .gift-lid::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 34px;
+            height: 100%;
+            background: linear-gradient(90deg, #eab308, #fef08a, #ca8a04);
+        }
+
+        /* Moño del regalo */
+        .gift-bow {
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 30px;
+            z-index: 11;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+        }
+
+        .gift-bow::before, .gift-bow::after {
+            content: '';
+            position: absolute;
+            width: 42px;
+            height: 32px;
+            border: 7px solid #facc15;
+            border-radius: 50% 50% 10% 50%;
+            top: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .gift-bow::before {
+            left: 0;
+            transform: rotate(-20deg);
+        }
+
+        .gift-bow::after {
+            right: 0;
+            border-radius: 50% 50% 50% 10%;
+            transform: rotate(20deg);
+        }
+
+        /* Animación de apertura */
+        .gift-open .gift-lid {
+            transform: translateY(-110px) rotate(-25deg) scale(1.1);
+            opacity: 0;
+        }
+        .gift-open .gift-bow {
+            transform: translate(-50%, -130px) rotate(25deg) scale(1.1);
+            opacity: 0;
+        }
+        .gift-open .gift-box {
+            transform: scale(0.95) translateY(20px);
+        }
+
+        /* Globos flotantes de fondo */
+        .balloon {
+            position: fixed;
+            bottom: -120px;
+            width: 48px;
+            height: 60px;
+            border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            width: 1px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.75;
+            }
+            50% {
+                transform: translateY(-55vh) translateX(20px) rotate(6deg);
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-120vh) translateX(-15px) rotate(-6deg);
+                opacity: 0;
+            }
+        }
+
+        /* Pastel de cumpleaños interactivo */
+        .flame {
+            transform-origin: center bottom;
+            animation: flicker 0.6s infinite alternate ease-in-out;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .flame.out {
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); opacity: 0.95; }
+            50% { transform: scale(1.08, 0.94) rotate(2deg); opacity: 1; }
+            100% { transform: scale(0.95, 1.06) rotate(-1deg); opacity: 0.9; }
+        }
+
+        /* Humo al apagar vela */
+        .smoke {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .smoke.rising {
+            animation: smokeRise 2.2s ease-out forwards;
+        }
+
+        @keyframes smokeRise {
+            0% {
+                opacity: 0.85;
+                transform: translateY(0) scale(0.6);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translateY(-25px) translateX(6px) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-55px) translateX(-6px) scale(1.8);
+            }
+        }
+
+        /* Tarjetas Flip (Galería de deseos) */
+        .flip-card {
+            perspective: 1000px;
+            height: 230px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner,
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Efecto cristal elegante */
+        .glass-panel {
+            background: rgba(20, 20, 28, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fef08a 0%, #facc15 45%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .neon-gradient-text {
+            background: linear-gradient(135deg, #f472b6 0%, #facc15 50%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-pink-500 selection:text-white">
+
+    <!-- Contenedor dinámico de globos -->
+    <div id="balloons-container" aria-hidden="true"></div>
+
+    <!-- Barra superior flotante (Audio y Personalizar) -->
+    <header class="fixed top-4 right-4 z-40 flex items-center gap-2.5">
+        <!-- Botón de Música Sintetizada -->
+        <button id="music-toggle" onclick="toggleBirthdayMusic()" 
+            class="glass-panel hover:bg-white/10 text-amber-300 px-3.5 py-2.5 rounded-full flex items-center gap-2 text-sm font-medium transition-all shadow-lg border border-amber-400/30 active:scale-95"
+            title="Reproducir o pausar melodía de Cumpleaños Feliz">
+            <i data-lucide="volume-x" id="music-icon" class="w-4 h-4"></i>
+            <span id="music-label" class="hidden sm:inline">Música</span>
+        </button>
+
+        <!-- Botón discreto de Personalización -->
+        <button onclick="openSettingsModal()" 
+            class="glass-panel hover:bg-white/10 text-slate-300 hover:text-white p-2.5 rounded-full transition-all shadow-lg border border-white/10 active:scale-95"
+            title="Personalizar tarjeta y generar enlace">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+        </button>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- PANTALLA 1: BIENVENIDA / CAJA DE REGALO INTERACTIVA                   -->
+    <!-- ===================================================================== -->
+    <section id="welcome-screen" class="min-h-screen flex flex-col items-center justify-center px-4 relative z-10 transition-all duration-700">
+        <div class="text-center max-w-lg mx-auto">
+            <span class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase bg-amber-400/10 text-amber-300 border border-amber-400/20 mb-6 animate-pulse">
+                ✨ Tienes una sorpresa especial ✨
+            </span>
+            
+            <h1 class="font-serif text-4xl sm:text-5xl font-extrabold text-white mb-3 tracking-tight">
+                Para <span id="welcome-name" class="gold-gradient-text">ti</span>
+            </h1>
+            
+            <p class="text-slate-400 text-sm sm:text-base mb-12">
+                Toca el regalo para abrir tu celebración
+            </p>
+
+            <!-- Caja de Regalo 3D -->
+            <div id="gift-trigger" onclick="openGift()" class="gift-scene py-8 select-none group">
+                <div class="gift-box animate-float">
+                    <div class="gift-bow"></div>
+                    <div class="gift-lid"></div>
+                    <div class="gift-body flex items-center justify-center">
+                        <span class="relative z-10 bg-zinc-950/80 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-amber-400/40 shadow-md group-hover:scale-110 transition-transform">
+                            ¡ÁBREME!
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="openGift()" class="mt-10 px-7 py-3 rounded-full bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white font-semibold text-sm shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 hover:scale-105 active:scale-95 transition-all">
+                Abrir sorpresa 🎉
+            </button>
+        </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- PANTALLA 2: CELEBRACIÓN PRINCIPAL (Oculta inicialmente)               -->
+    <!-- ===================================================================== -->
+    <main id="celebration-content" class="hidden opacity-0 transition-opacity duration-1000 relative z-10 pb-20">
+        
+        <!-- Hero Banner -->
+        <section class="pt-20 pb-12 px-4 text-center max-w-4xl mx-auto">
+            <div id="age-badge-container" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-pink-500/20 border border-amber-400/30 text-amber-300 text-sm font-semibold mb-5">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                <span id="age-badge-text">¡Hoy es tu gran día!</span>
+            </div>
+
+            <h1 class="font-script text-5xl sm:text-7xl md:text-8xl neon-gradient-text drop-shadow-sm py-2 leading-tight">
+                ¡Feliz Cumpleaños!
+            </h1>
+            
+            <h2 id="hero-name" class="font-serif text-3xl sm:text-5xl font-bold text-white mt-2 tracking-wide">
+                Alex
+            </h2>
+
+            <div class="mt-6 flex justify-center gap-3">
+                <button onclick="launchMegaConfetti()" class="px-5 py-2.5 rounded-full glass-panel hover:bg-white/10 text-amber-300 text-sm font-medium border border-amber-400/30 flex items-center gap-2 transition-all active:scale-95">
+                    <i data-lucide="party-popper" class="w-4 h-4"></i>
+                    <span>¡Más confeti!</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Sección 1: Pastel Interactivo con Velas -->
+        <section class="px-4 py-8 max-w-2xl mx-auto">
+            <div class="glass-panel rounded-3xl p-6 sm:p-10 text-center shadow-2xl border border-white/10 relative overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <h3 class="font-serif text-2xl sm:text-3xl font-bold text-amber-300 mb-2">
+                    Pide un deseo ✨
+                </h3>
+                <p id="cake-instruction" class="text-slate-300 text-sm sm:text-base mb-6">
+                    Toca cada vela para apagarla o pulsa el botón de abajo
+                </p>
+
+                <!-- Pastel SVG Interactivo -->
+                <div class="relative w-full max-w-[320px] mx-auto my-4 select-none">
+                    <svg viewBox="0 0 300 240" class="w-full h-auto drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]">
+                        <defs>
+                            <linearGradient id="cakeBase" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#be185d"/>
+                                <stop offset="50%" stop-color="#ec4899"/>
+                                <stop offset="100%" stop-color="#9d174d"/>
+                            </linearGradient>
+                            <linearGradient id="cakeTop" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#7e22ce"/>
+                                <stop offset="50%" stop-color="#a855f7"/>
+                                <stop offset="100%" stop-color="#6b21a8"/>
+                            </linearGradient>
+                            <linearGradient id="goldPlate" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#ca8a04"/>
+                                <stop offset="50%" stop-color="#fef08a"/>
+                                <stop offset="100%" stop-color="#eab308"/>
+                            </linearGradient>
+                            <radialGradient id="flameGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#fef08a" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Plato dorado -->
+                        <ellipse cx="150" cy="215" rx="135" ry="16" fill="url(#goldPlate)" />
+                        <ellipse cx="150" cy="212" rx="125" ry="12" fill="#18181b" opacity="0.3" />
+
+                        <!-- Piso inferior del pastel -->
+                        <rect x="45" y="145" width="210" height="65" rx="14" fill="url(#cakeBase)" />
+                        <!-- Glaseado goteando piso inferior -->
+                        <path d="M45,155 Q60,175 75,158 T105,162 T135,156 T165,164 T195,157 T225,163 T255,155 L255,145 Q255,138 245,138 L55,138 Q45,138 45,145 Z" fill="#fbcfe8" />
+
+                        <!-- Piso superior del pastel -->
+                        <rect x="75" y="92" width="150" height="52" rx="12" fill="url(#cakeTop)" />
+                        <!-- Glaseado blanco/crema superior -->
+                        <path d="M75,102 Q90,118 105,104 T135,108 T165,103 T195,109 T225,102 L225,94 Q225,86 215,86 L85,86 Q75,86 75,94 Z" fill="#fef3c7" />
+
+                        <!-- Chispas decorativas -->
+                        <circle cx="95" cy="180" r="3.5" fill="#fde047" />
+                        <circle cx="130" cy="188" r="3.5" fill="#38bdf8" />
+                        <circle cx="170" cy="182" r="3.5" fill="#fde047" />
+                        <circle cx="205" cy="188" r="3.5" fill="#f472b6" />
+                        <circle cx="115" cy="126" r="3" fill="#fde047" />
+                        <circle cx="150" cy="130" r="3" fill="#38bdf8" />
+                        <circle cx="185" cy="125" r="3" fill="#fde047" />
+
+                        <!-- VELA 1 (Izquierda) -->
+                        <g class="candle-group cursor-pointer" onclick="blowOutCandle(0)">
+                            <rect x="102" y="52" width="12" height="36" rx="3" fill="#38bdf8" />
+                            <path d="M102,60 L114,66 M102,70 L114,76 M102,80 L114,86" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+                            <line x1="108" y1="52" x2="108" y2="46" stroke="#1e293b" stroke-width="2" />
+                            <!-- Resplandor y Llama -->
+                            <g id="flame-0" class="flame">
+                                <circle cx="108" cy="36" r="16" fill="url(#flameGlow)" />
+                                <path d="M108,22 C115,32 115,42 108,45 C101,42 101,32 108,22 Z" fill="#f97316" />
+                                <path d="M108,27 C112,34 112,40 108,43 C104,40 104,34 108,27 Z" fill="#fef08a" />
+                            </g>
+                            <!-- Humo -->
+                            <circle id="smoke-0" class="smoke" cx="108" cy="40" r="5" fill="#cbd5e1" />
+                        </g>
+
+                        <!-- VELA 2 (Centro) -->
+                        <g class="candle-group cursor-pointer" onclick="blowOutCandle(1)">
+                            <rect x="144" y="46" width="12" height="42" rx="3" fill="#facc15" />
+                            <path d="M144,55 L156,61 M144,65 L156,71 M144,75 L156,81" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+                            <line x1="150" y1="46" x2="150" y2="40" stroke="#1e293b" stroke-width="2" />
+                            <!-- Resplandor y Llama -->
+                            <g id="flame-1" class="flame">
+                                <circle cx="150" cy="30" r="16" fill="url(#flameGlow)" />
+                                <path d="M150,16 C157,26 157,36 150,39 C143,36 143,26 150,16 Z" fill="#f97316" />
+                                <path d="M150,21 C154,28 154,34 150,37 C146,34 146,28 150,21 Z" fill="#fef08a" />
+                            </g>
+                            <!-- Humo -->
+                            <circle id="smoke-1" class="smoke" cx="150" cy="34" r="5" fill="#cbd5e1" />
+                        </g>
+
+                        <!-- VELA 3 (Derecha) -->
+                        <g class="candle-group cursor-pointer" onclick="blowOutCandle(2)">
+                            <rect x="186" y="52" width="12" height="36" rx="3" fill="#f43f5e" />
+                            <path d="M186,60 L198,66 M186,70 L198,76 M186,80 L198,86" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+                            <line x1="192" y1="52" x2="192" y2="46" stroke="#1e293b" stroke-width="2" />
+                            <!-- Resplandor y Llama -->
+                            <g id="flame-2" class="flame">
+                                <circle cx="192" cy="36" r="16" fill="url(#flameGlow)" />
+                                <path d="M192,22 C199,32 199,42 192,45 C185,42 185,32 192,22 Z" fill="#f97316" />
+                                <path d="M192,27 C196,34 196,40 192,43 C188,40 188,34 192,27 Z" fill="#fef08a" />
+                            </g>
+                            <!-- Humo -->
+                            <circle id="smoke-2" class="smoke" cx="192" cy="40" r="5" fill="#cbd5e1" />
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Botones de acción del pastel -->
+                <div class="mt-4 flex flex-wrap justify-center gap-3">
+                    <button id="blow-all-btn" onclick="blowAllCandles()" 
+                        class="px-6 py-3 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-zinc-950 font-bold text-sm shadow-lg shadow-amber-500/25 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                        <i data-lucide="wind" class="w-4 h-4"></i>
+                        <span>Pedir un deseo y soplar las velas</span>
+                    </button>
+
+                    <button id="relight-btn" onclick="relightCandles()" 
+                        class="hidden px-5 py-3 rounded-full glass-panel hover:bg-white/10 text-amber-300 font-medium text-sm border border-amber-400/30 transition-all flex items-center gap-2">
+                        <i data-lucide="flame" class="w-4 h-4"></i>
+                        <span>Volver a encender</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Tarjeta de Dedicatoria Personalizada -->
+        <section class="px-4 py-8 max-w-3xl mx-auto">
+            <div class="glass-panel rounded-3xl p-8 sm:p-12 border border-amber-400/20 shadow-2xl relative">
+                <div class="flex justify-center mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-300">
+                        <i data-lucide="heart" class="w-6 h-6 fill-amber-400/30"></i>
+                    </div>
+                </div>
+                
+                <h3 class="font-serif text-2xl sm:text-3xl font-bold text-center text-white mb-6">
+                    Un mensaje especial para ti
+                </h3>
+                
+                <blockquote id="custom-message" class="text-slate-200 text-base sm:text-lg leading-relaxed text-center font-light italic">
+                    "Que este nuevo año de vida esté lleno de momentos inolvidables, risas contagiosas, sueños cumplidos y personas que te hagan muy feliz. ¡Disfruta tu día al máximo, te mereces todo lo bueno del mundo!"
+                </blockquote>
+
+                <div class="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
+                    <span id="sender-signature" class="font-script text-xl text-amber-300">Con mucho cariño ✨</span>
+                    <button onclick="openSettingsModal()" class="text-xs text-slate-400 hover:text-amber-300 underline underline-offset-4 transition-colors">
+                        Crear una tarjeta como esta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3: Galería de Deseos y Recuerdos (Tarjetas Flip Interactivas) -->
+        <section class="px-4 py-8 max-w-5xl mx-auto">
+            <div class="text-center mb-8">
+                <h3 class="font-serif text-2xl sm:text-3xl font-bold text-white">
+                    Mis deseos para tu nuevo año
+                </h3>
+                <p class="text-slate-400 text-sm mt-1">Toca o pasa el cursor sobre cada tarjeta para descubrirlo</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- Tarjeta 1 -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel border border-pink-500/30 shadow-lg">
+                            <div class="w-14 h-14 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 mb-4">
+                                <i data-lucide="compass" class="w-7 h-7"></i>
+                            </div>
+                            <h4 class="font-bold text-lg text-white">Nuevas Aventuras</h4>
+                            <span class="text-xs text-pink-300 mt-2">Toca para abrir ✨</span>
+                        </div>
+                        <div class="flip-card-back bg-gradient-to-br from-pink-600 to-rose-700 text-white shadow-xl">
+                            <p class="text-sm sm:text-base font-medium leading-relaxed">
+                                Que nunca te falten motivos para viajar, explorar nuevos caminos y coleccionar historias increíbles.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2 -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel border border-amber-400/30 shadow-lg">
+                            <div class="w-14 h-14 rounded-full bg-amber-400/20 flex items-center justify-center text-amber-300 mb-4">
+                                <i data-lucide="trophy" class="w-7 h-7"></i>
+                            </div>
+                            <h4 class="font-bold text-lg text-white">Grandes Logros</h4>
+                            <span class="text-xs text-amber-300 mt-2">Toca para abrir ✨</span>
+                        </div>
+                        <div class="flip-card-back bg-gradient-to-br from-amber-500 to-orange-600 text-zinc-950 shadow-xl">
+                            <p class="text-sm sm:text-base font-semibold leading-relaxed">
+                                Que cada meta que te propongas este año se transforme en un éxito rotundo. ¡Tienes todo para lograrlo!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel border border-sky-400/30 shadow-lg">
+                            <div class="w-14 h-14 rounded-full bg-sky-400/20 flex items-center justify-center text-sky-300 mb-4">
+                                <i data-lucide="smile" class="w-7 h-7"></i>
+                            </div>
+                            <h4 class="font-bold text-lg text-white">Risas Infinitas</h4>
+                            <span class="text-xs text-sky-300 mt-2">Toca para abrir ✨</span>
+                        </div>
+                        <div class="flip-card-back bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-xl">
+                            <p class="text-sm sm:text-base font-medium leading-relaxed">
+                                Que los días buenos sean inolvidables y que incluso los días grises terminen con una buena carcajada.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 4 -->
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel border border-purple-400/30 shadow-lg">
+                            <div class="w-14 h-14 rounded-full bg-purple-400/20 flex items-center justify-center text-purple-300 mb-4">
+                                <i data-lucide="star" class="w-7 h-7"></i>
+                            </div>
+                            <h4 class="font-bold text-lg text-white">Salud y Magia</h4>
+                            <span class="text-xs text-purple-300 mt-2">Toca para abrir ✨</span>
+                        </div>
+                        <div class="flip-card-back bg-gradient-to-br from-purple-600 to-fuchsia-700 text-white shadow-xl">
+                            <p class="text-sm sm:text-base font-medium leading-relaxed">
+                                Mucha salud, paz mental y gente bonita rodeándote siempre. ¡Brindemos por una vuelta al sol espectacular!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pie de página -->
+        <footer class="text-center text-slate-500 text-xs mt-12 px-4">
+            <p>Hecho con ✨ para celebrar un día muy especial</p>
+        </footer>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL: GENERADOR DE ENLACE PERSONALIZADO (URL PARAMS)                 -->
+    <!-- ===================================================================== -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass-panel bg-zinc-900/95 border border-white/15 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeSettingsModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2.5 mb-2">
+                <i data-lucide="wand-2" class="w-5 h-5 text-amber-400"></i>
+                <h3 class="font-serif text-xl font-bold text-white">Personalizar Felicitación</h3>
+            </div>
+            <p class="text-slate-400 text-xs mb-6">
+                Completa los datos para generar un enlace único listo para compartir por WhatsApp o redes sociales.
+            </p>
+
+            <form id="customizer-form" onsubmit="applyAndGenerateLink(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Nombre del cumpleañero/a</label>
+                    <input type="text" id="input-name" placeholder="Ej. Sofía" maxlength="35"
+                        class="w-full px-4 py-2.5 rounded-xl bg-zinc-950/80 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Edad (opcional)</label>
+                        <input type="number" id="input-age" placeholder="Ej. 25" min="1" max="130"
+                            class="w-full px-4 py-2.5 rounded-xl bg-zinc-950/80 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">De parte de (opcional)</label>
+                        <input type="text" id="input-from" placeholder="Ej. Tu amigo Carlos" maxlength="35"
+                            class="w-full px-4 py-2.5 rounded-xl bg-zinc-950/80 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Mensaje dedicatoria</label>
+                    <textarea id="input-message" rows="3" placeholder="Escribe un mensaje bonito..." maxlength="400"
+                        class="w-full px-4 py-2.5 rounded-xl bg-zinc-950/80 border border-white/10 text-white text-sm focus:outline-none focus:border-amber-400 resize-none"></textarea>
+                </div>
+
+                <button type="submit" 
+                    class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-pink-500 text-zinc-950 font-bold text-sm hover:opacity-95 transition-all shadow-lg">
+                    Aplicar y Generar Enlace 🔗
+                </button>
+            </form>
+
+            <!-- Resultado del enlace generado -->
+            <div id="generated-link-box" class="hidden mt-5 pt-5 border-t border-white/10">
+                <label class="block text-xs font-medium text-amber-300 mb-1.5">¡Enlace listo para compartir!</label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="share-url-output" readonly 
+                        class="w-full px-3 py-2 rounded-lg bg-zinc-950 border border-amber-400/30 text-slate-300 text-xs select-all">
+                    <button onclick="copyGeneratedLink()" id="copy-btn"
+                        class="px-3.5 py-2 rounded-lg bg-amber-400 text-zinc-950 font-semibold text-xs hover:bg-amber-300 transition-colors shrink-0">
+                        Copiar
+                    </button>
+                </div>
+                <p id="copy-feedback" class="text-emerald-400 text-xs mt-1.5 hidden">✓ ¡Enlace copiado al portapapeles!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- NOTIFICACIÓN FLOTANTE (TOAST)                                         -->
+    <!-- ===================================================================== -->
+    <div id="toast-notification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full glass-panel border border-amber-400/40 text-amber-200 text-sm font-medium shadow-2xl opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4">
+        ✨ ¡Deseo pedido! Que todos tus sueños se hagan realidad ✨
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- LÓGICA JAVASCRIPT                                                     -->
+    <!-- ===================================================================== -->
+    <script>
+        // Inicializar iconos Lucide
+        lucide.createIcons();
+
+        // Estado de la aplicación
+        let candlesState = [true, true, true]; // true = encendida, false = apagada
+        let isGiftOpened = false;
+
+        // Valores por defecto
+        const defaultData = {
+            nombre: 'Alex',
+            edad: '',
+            mensaje: 'Que este nuevo año de vida esté lleno de momentos inolvidables, risas contagiosas, sueños cumplidos y personas que te hagan muy feliz. ¡Disfruta tu día al máximo, te mereces todo lo bueno del mundo!',
+            de: 'Con mucho cariño ✨'
+        };
+
+        // ---------------------------------------------------------------------
+        // 1. GESTIÓN DE PARÁMETROS DE URL (?nombre=...&edad=...&mensaje=...)
+        // ---------------------------------------------------------------------
+        function loadPersonalizationFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            
+            const nombre = params.get('nombre')?.trim() || defaultData.nombre;
+            const edad = params.get('edad')?.trim() || defaultData.edad;
+            const mensaje = params.get('mensaje')?.trim() || defaultData.mensaje;
+            const de = params.get('de')?.trim() || defaultData.de;
+
+            applyDataToDOM({ nombre, edad, mensaje, de });
+
+            // Rellenar el formulario del modal con los valores actuales
+            document.getElementById('input-name').value = nombre === defaultData.nombre && !params.has('nombre') ? '' : nombre;
+            document.getElementById('input-age').value = edad;
+            document.getElementById('input-message').value = mensaje === defaultData.mensaje && !params.has('mensaje') ? '' : mensaje;
+            document.getElementById('input-from').value = de === defaultData.de && !params.has('de') ? '' : de;
+        }
+
+        function applyDataToDOM({ nombre, edad, mensaje, de }) {
+            document.title = `¡Feliz Cumpleaños, ${nombre}! 🎉`;
+            document.getElementById('welcome-name').textContent = nombre;
+            document.getElementById('hero-name').textContent = nombre;
+            document.getElementById('custom-message').textContent = `"${mensaje}"`;
+            document.getElementById('sender-signature').textContent = de.startsWith('Con') || de.startsWith('De') ? de : `Con cariño, ${de} ✨`;
+
+            const ageBadgeText = document.getElementById('age-badge-text');
+            if (edad && !isNaN(edad)) {
+                ageBadgeText.textContent = `¡Celebrando tus ${edad} años!`;
+            } else {
+                ageBadgeText.textContent = '¡Hoy es tu gran día!';
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 2. GLOBOS FLOTANTES DE FONDO
+        // ---------------------------------------------------------------------
+        function createBalloons() {
+            const container = document.getElementById('balloons-container');
+            const colors = [
+                'radial-gradient(circle at 30% 30%, #f472b6, #db2777)',
+                'radial-gradient(circle at 30% 30%, #fde047, #eab308)',
+                'radial-gradient(circle at 30% 30%, #38bdf8, #0284c7)',
+                'radial-gradient(circle at 30% 30%, #c084fc, #7e22ce)',
+                'radial-gradient(circle at 30% 30%, #fb7185, #e11d48)'
+            ];
+
+            for (let i = 0; i < 14; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.style.left = `${Math.random() * 95}%`;
+                balloon.style.background = colors[i % colors.length];
+                balloon.style.animationDuration = `${12 + Math.random() * 10}s`;
+                balloon.style.animationDelay = `${Math.random() * 8}s`;
+                const scale = 0.75 + Math.random() * 0.5;
+                balloon.style.transform = `scale(${scale})`;
+                container.appendChild(balloon);
+            }
+        }
+
+        // ---------------------------------------------------------------------
+        // 3. APERTURA DE REGALO Y CONFETI
+        // ---------------------------------------------------------------------
+        function openGift() {
+            if (isGiftOpened) return;
+            isGiftOpened = true;
+
+            const giftTrigger = document.getElementById('gift-trigger');
+            giftTrigger.classList.add('gift-open');
+
+            // Explosión inicial de confeti
+            launchMegaConfetti();
+
+            // Intentar iniciar música automáticamente tras interacción del usuario
+            if (!isPlayingMusic) {
+                startBirthdayMusic();
+            }
+
+            setTimeout(() => {
+                const welcomeScreen = document.getElementById('welcome-screen');
+                const celebrationContent = document.getElementById('celebration-content');
+
+                welcomeScreen.style.opacity = '0';
+                welcomeScreen.style.transform = 'scale(0.95)';
+
+                setTimeout(() => {
+                    welcomeScreen.classList.add('hidden');
+                    celebrationContent.classList.remove('hidden');
+                    // Forzar reflow
+                    void celebrationContent.offsetWidth;
+                    celebrationContent.style.opacity = '1';
+                }, 500);
+            }, 650);
+        }
+
+        function launchMegaConfetti() {
+            if (typeof confetti !== 'function') return;
+
+            const colors = ['#facc15', '#ec4899', '#38bdf8', '#a855f7', '#ffffff'];
+
+            confetti({
+                particleCount: 90,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: colors
+            });
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.65 },
+                    colors: colors
+                });
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.65 },
+                    colors: colors
+                });
+            }, 250);
+        }
+
+        // ---------------------------------------------------------------------
+        // 4. PASTEL INTERACTIVO Y VELAS
+        // ---------------------------------------------------------------------
+        function blowOutCandle(index) {
+            if (!candlesState[index]) return;
+            candlesState[index] = false;
+
+            const flame = document.getElementById(`flame-${index}`);
+            const smoke = document.getElementById(`smoke-${index}`);
+
+            if (flame) flame.classList.add('out');
+            if (smoke) {
+                smoke.classList.remove('rising');
+                void smoke.offsetWidth;
+                smoke.classList.add('rising');
+            }
+
+            playBlowSound();
+            checkAllCandlesOut();
+        }
+
+        function blowAllCandles() {
+            candlesState.forEach((isLit, idx) => {
+                if (isLit) {
+                    setTimeout(() => blowOutCandle(idx), idx * 140);
+                }
+            });
+        }
+
+        function checkAllCandlesOut() {
+            const allOut = candlesState.every(state => state === false);
+            if (allOut) {
+                document.getElementById('cake-instruction').textContent = '¡Deseo pedido! 🎉 Que se cumpla todo lo que soñaste.';
+                document.getElementById('blow-all-btn').classList.add('hidden');
+                document.getElementById('relight-btn').classList.remove('hidden');
+                
+                showToast('✨ ¡Deseo pedido! Que todos tus sueños se hagan realidad ✨');
+                launchMegaConfetti();
+            }
+        }
+
+        function relightCandles() {
+            candlesState = [true, true, true];
+            [0, 1, 2].forEach(idx => {
+                const flame = document.getElementById(`flame-${idx}`);
+                const smoke = document.getElementById(`smoke-${idx}`);
+                if (flame) flame.classList.remove('out');
+                if (smoke) smoke.classList.remove('rising');
+            });
+
+            document.getElementById('cake-instruction').textContent = 'Toca cada vela para apagarla o pulsa el botón de abajo';
+            document.getElementById('blow-all-btn').classList.remove('hidden');
+            document.getElementById('relight-btn').classList.add('hidden');
+        }
+
+        // ---------------------------------------------------------------------
+        // 5. MÚSICA SINTETIZADA (WEB AUDIO API - CUMPLEAÑOS FELIZ)
+        // ---------------------------------------------------------------------
+        let audioCtx = null;
+        let isPlayingMusic = false;
+        let musicTimeout = null;
+
+        // Notas de "Cumpleaños Feliz" (Frecuencia en Hz, duración en segundos)
+        const happyBirthdayNotes = [
+            // Cum-ple-a-ños fe-liz
+            { freq: 261.63, dur: 0.35 }, { freq: 261.63, dur: 0.2 }, { freq: 293.66, dur: 0.55 },
+            { freq: 261.63, dur: 0.55 }, { freq: 349.23, dur: 0.55 }, { freq: 329.63, dur: 1.0 },
+            // Cum-ple-a-ños fe-liz
+            { freq: 261.63, dur: 0.35 }, { freq: 261.63, dur: 0.2 }, { freq: 293.66, dur: 0.55 },
+            { freq: 261.63, dur: 0.55 }, { freq: 392.00, dur: 0.55 }, { freq: 349.23, dur: 1.0 },
+            // Te de-se-a-mos to-dos
+            { freq: 261.63, dur: 0.35 }, { freq: 261.63, dur: 0.2 }, { freq: 523.25, dur: 0.55 },
+            { freq: 440.00, dur: 0.55 }, { freq: 349.23, dur: 0.55 }, { freq: 329.63, dur: 0.55 }, { freq: 293.66, dur: 0.9 },
+            // Cum-ple-a-ños fe-liz
+            { freq: 466.16, dur: 0.35 }, { freq: 466.16, dur: 0.2 }, { freq: 440.00, dur: 0.55 },
+            { freq: 349.23, dur: 0.55 }, { freq: 392.00, dur: 0.55 }, { freq: 349.23, dur: 1.2 }
+        ];
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq, duration) {
+            if (!audioCtx || !isPlayingMusic) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            // Timbre cálido tipo caja de música / piano eléctrico
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.14, audioCtx.currentTime + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function playBlowSound() {
+            try {
+                initAudioContext();
+                const bufferSize = audioCtx.sampleRate * 0.25;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 600;
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                noise.start();
+            } catch (e) {
+                // Ignorar si el navegador bloquea audio sin interacción
+            }
+        }
+
+        function playMelodySequence(noteIndex = 0) {
+            if (!isPlayingMusic) return;
+
+            if (noteIndex >= happyBirthdayNotes.length) {
+                // Pausa de 2 segundos y repetir suavemente
+                musicTimeout = setTimeout(() => playMelodySequence(0), 2000);
+                return;
+            }
+
+            const note = happyBirthdayNotes[noteIndex];
+            playTone(note.freq, note.dur);
+
+            musicTimeout = setTimeout(() => {
+                playMelodySequence(noteIndex + 1);
+            }, note.dur * 1000 + 60);
+        }
+
+        function startBirthdayMusic() {
+            try {
+                initAudioContext();
+                isPlayingMusic = true;
+                updateMusicUI();
+                playMelodySequence(0);
+            } catch (e) {
+                console.warn('Audio no disponible:', e);
+            }
+        }
+
+        function stopBirthdayMusic() {
+            isPlayingMusic = false;
+            clearTimeout(musicTimeout);
+            updateMusicUI();
+        }
+
+        function toggleBirthdayMusic() {
+            if (isPlayingMusic) {
+                stopBirthdayMusic();
+            } else {
+                startBirthdayMusic();
+            }
+        }
+
+        function updateMusicUI() {
+            const icon = document.getElementById('music-icon');
+            const label = document.getElementById('music-label');
+            if (isPlayingMusic) {
+                icon.setAttribute('data-lucide', 'volume-2');
+                label.textContent = 'Sonando';
+            } else {
+                icon.setAttribute('data-lucide', 'volume-x');
+                label.textContent = 'Música';
+            }
+            lucide.createIcons();
+        }
+
+        // ---------------------------------------------------------------------
+        // 6. MODAL DE PERSONALIZACIÓN Y GENERADOR DE ENLACES
+        // ---------------------------------------------------------------------
+        function openSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function applyAndGenerateLink(event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById('input-name').value.trim() || defaultData.nombre;
+            const edad = document.getElementById('input-age').value.trim();
+            const de = document.getElementById('input-from').value.trim() || defaultData.de;
+            const mensaje = document.getElementById('input-message').value.trim() || defaultData.mensaje;
+
+            // Actualizar vista actual
+            applyDataToDOM({ nombre, edad, mensaje, de });
+
+            // Construir URL con parámetros
+            const url = new URL(window.location.href.split('?')[0]);
+            if (nombre !== defaultData.nombre) url.searchParams.set('nombre', nombre);
+            if (edad) url.searchParams.set('edad', edad);
+            if (de !== defaultData.de) url.searchParams.set('de', de);
+            if (mensaje !== defaultData.mensaje) url.searchParams.set('mensaje', mensaje);
+
+            const finalUrl = url.toString();
+
+            // Actualizar historial del navegador sin recargar
+            try {
+                window.history.replaceState({}, '', finalUrl);
+            } catch (e) {}
+
+            // Mostrar caja para copiar enlace
+            const linkBox = document.getElementById('generated-link-box');
+            const outputInput = document.getElementById('share-url-output');
+            outputInput.value = finalUrl;
+            linkBox.classList.remove('hidden');
+            document.getElementById('copy-feedback').classList.add('hidden');
+        }
+
+        function copyGeneratedLink() {
+            const outputInput = document.getElementById('share-url-output');
+            outputInput.select();
+            outputInput.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+
+            const feedback = document.getElementById('copy-feedback');
+            feedback.classList.remove('hidden');
+            setTimeout(() => feedback.classList.add('hidden'), 3500);
+        }
+
+        // ---------------------------------------------------------------------
+        // 7. UTILIDADES (NOTIFICACIÓN TOAST)
+        // ---------------------------------------------------------------------
+        function showToast(text) {
+            const toast = document.getElementById('toast-notification');
+            toast.textContent = text;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 4000);
+        }
+
+        // Inicialización al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPersonalizationFromURL();
+            createBalloons();
+        });
+    </script>
+</body>
+</html>
