@@ -17,4 +17,4 @@ Para añadir una felicitación, crea una carpeta con el nombre de la persona y g
 
 ## Publicación
 
-El workflow de GitHub Actions publica el contenido del repositorio en GitHub Pages al actualizar la rama `main`. También se puede iniciar manualmente desde la pestaña **Actions** de GitHub.
+La primera vez, configura el repositorio en **Settings → Pages** y selecciona **GitHub Actions** como origen de publicación. Después, el workflow de GitHub Actions publica el contenido del repositorio al actualizar la rama `main`. También se puede iniciar manualmente desde la pestaña **Actions** de GitHub.
