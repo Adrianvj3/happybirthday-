@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>¡Felicidades, Tía Juana!</title>
+  <title>¡Felicidades, Juana!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
@@ -108,4 +108,147 @@
       margin-top: 28px;
       font-weight: 700;
       font-size: 1.1rem;
-      color: var(--
+      color: var(--primary);
+    }
+
+    .btn {
+      margin-top: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(217, 83, 111, 0.28);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(217, 83, 111, 0.36);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 36px 22px;
+      }
+      .message {
+        font-size: 1.02rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+
+  <main class="card">
+    <span class="badge">Un día muy especial</span>
+    <h1>¡Muchísimas felicidades, Tía Juana!</h1>
+    <div class="divider"></div>
+
+    <p class="message">
+      Hoy celebramos mucho más que una fecha en el calendario: celebramos tu vida,
+      tu alegría contagiosa y la suerte inmensa que tenemos de tenerte en nuestra familia.
+    </p>
+
+    <p class="message">
+      Gracias por cada abrazo sincero, por tus consejos llenos de cariño y por iluminar
+      cualquier reunión con tu sonrisa. Eres de esas personas que hacen que todo a su alrededor
+      sea más bonito, más cálido y más feliz.
+    </p>
+
+    <p class="highlight">
+      “Que la vida te devuelva multiplicado todo el amor y la alegría que regalas cada día.”
+    </p>
+
+    <p class="message">
+      Te deseamos un año repleto de salud, risas inolvidables y momentos para guardar
+      siempre en el corazón. ¡A disfrutarlo al máximo!
+    </p>
+
+    <p class="signature">Con todo nuestro cariño ❤️</p>
+
+    <button class="btn" id="celebrateBtn" type="button">
+      🎉 ¡Lanzar más alegría!
+    </button>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    const colors = ['#d9536f', '#f4a261', '#e9c46a', '#2a9d8f', '#ff8fab'];
+    let particles = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    function spawnConfetti(count = 110) {
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * 120,
+          w: 6 + Math.random() * 6,
+          h: 10 + Math.random() * 8,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 3,
+          vy: 2 + Math.random() * 3.5,
+          angle: Math.random() * Math.PI * 2,
+          spin: (Math.random() - 0.5) * 0.15
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles = particles.filter(p => p.y < canvas.height + 30);
+
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.angle += p.spin;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    document.getElementById('celebrateBtn').addEventListener('click', () => spawnConfetti(100));
+
+    // Lanza confeti automáticamente al abrir la página
+    spawnConfetti(120);
+    animate();
+  </script>
+</body>
+</html>
