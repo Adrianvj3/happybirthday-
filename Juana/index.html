@@ -3,21 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>¡Felicidades, Juana!</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>¡Felicidades, Tía Juana!</title>
   <style>
-    :root {
-      --bg-top: #fff5f7;
-      --bg-bottom: #ffe8d6;
-      --card-bg: rgba(255, 255, 255, 0.92);
-      --primary: #d9536f;
-      --secondary: #f4a261;
-      --text-dark: #3d2c2e;
-      --text-muted: #6b5357;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -30,10 +17,9 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      font-family: 'Quicksand', sans-serif;
-      color: var(--text-dark);
-      background: linear-gradient(135deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-      overflow-x: hidden;
+      font-family: Georgia, 'Times New Roman', serif;
+      color: #3d2c2e;
+      background: linear-gradient(135deg, #fff5f7 0%, #ffe8d6 100%);
     }
 
     canvas#confetti {
@@ -48,23 +34,21 @@
     .card {
       position: relative;
       z-index: 2;
-      max-width: 640px;
+      max-width: 620px;
       width: 100%;
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border-radius: 28px;
-      padding: 48px 36px;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 44px 32px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(217, 83, 111, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      animation: fadeUp 0.9s ease-out both;
+      box-shadow: 0 20px 50px rgba(217, 83, 111, 0.15);
     }
 
     .badge {
       display: inline-block;
       background: #ffe3e8;
-      color: var(--primary);
-      font-weight: 700;
+      color: #d9536f;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
       font-size: 0.85rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -74,88 +58,59 @@
     }
 
     h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.2rem, 5vw, 3.2rem);
-      color: var(--primary);
-      line-height: 1.15;
-      margin-bottom: 24px;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #d9536f;
+      line-height: 1.2;
+      margin-bottom: 20px;
     }
 
     .divider {
       width: 72px;
       height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      background: linear-gradient(90deg, #d9536f, #f4a261);
       border-radius: 999px;
-      margin: 0 auto 28px;
+      margin: 0 auto 24px;
     }
 
     .message {
-      font-size: 1.12rem;
-      line-height: 1.8;
-      color: var(--text-muted);
-      margin-bottom: 18px;
+      font-family: Arial, sans-serif;
+      font-size: 1.08rem;
+      line-height: 1.75;
+      color: #5c474a;
+      margin-bottom: 16px;
     }
 
     .highlight {
-      font-family: 'Playfair Display', serif;
       font-style: italic;
-      font-size: 1.3rem;
-      color: var(--text-dark);
-      margin: 26px 0;
+      font-size: 1.25rem;
+      color: #3d2c2e;
+      margin: 24px 0;
     }
 
     .signature {
-      margin-top: 28px;
-      font-weight: 700;
+      margin-top: 24px;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
       font-size: 1.1rem;
-      color: var(--primary);
+      color: #d9536f;
     }
 
     .btn {
-      margin-top: 30px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: #fff;
+      margin-top: 28px;
+      background: linear-gradient(135deg, #d9536f, #f4a261);
+      color: #ffffff;
       border: none;
       padding: 14px 28px;
       border-radius: 999px;
-      font-family: 'Quicksand', sans-serif;
+      font-family: Arial, sans-serif;
       font-size: 1rem;
-      font-weight: 700;
+      font-weight: bold;
       cursor: pointer;
       box-shadow: 0 10px 24px rgba(217, 83, 111, 0.28);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(217, 83, 111, 0.36);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        padding: 36px 22px;
-      }
-      .message {
-        font-size: 1.02rem;
-      }
+      opacity: 0.92;
     }
   </style>
 </head>
@@ -245,8 +200,6 @@
     }
 
     document.getElementById('celebrateBtn').addEventListener('click', () => spawnConfetti(100));
-
-    // Lanza confeti automáticamente al abrir la página
     spawnConfetti(120);
     animate();
   </script>
